@@ -151,10 +151,9 @@ async def collect_once(proxy_server: str, trending_count: int, ms_token: str) ->
 
             async for video in api.trending.videos(count=trending_count):
                 raw = getattr(video, "as_dict", None)
-                if raw is None and hasattr(video, "as_dict"):
-                    raw = video.as_dict
                 if callable(raw):
                     raw = raw()
+
                 if not isinstance(raw, dict):
                     raise CollectorError("video payload is not a dict")
                 items.append(normalize_video(raw))
@@ -178,6 +177,9 @@ async def run() -> None:
     proxies = get_proxy_list()
     proxies = proxies[:max_proxies]
 
+    if not proxies:
+        raise CollectorError("no proxies loaded")
+    
     latest_path = Path(os.getenv("LATEST_OUTPUT_PATH", "data/trending_latest.json"))
     history_path = Path(os.getenv("HISTORY_OUTPUT_PATH", "data/trending_history.jsonl"))
     attempt_log_path = Path(os.getenv("ATTEMPT_LOG_PATH", "data/attempt_log.jsonl"))
@@ -223,8 +225,12 @@ async def run() -> None:
             return
 
         print(f"failed with proxy {result.proxy}: {result.reason}")
-        if not should_rotate_proxy(result.reason):
-            raise CollectorError(f"non-rotatable error: {result.reason}")
+
+        if should_rotate_proxy(result.reason):
+            print("rotating to next proxy...")
+            continue
+
+        raise CollectorError(f"non-rotatable error: {result.reason}")
 
     raise CollectorError("all proxies failed")
 
