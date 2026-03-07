@@ -26,6 +26,42 @@ class AttemptResult:
     items: List[Dict[str, Any]]
 
 
+def should_rotate_proxy(reason: Exception | str) -> bool:
+    text = str(reason).lower()
+
+    keywords = [
+        "unacceptable tls certificate",
+        "certificate",
+        "cert",
+        "tls",
+        "ssl",
+        "emptyresponse",
+        "empty response",
+        "timed out",
+        "timeout",
+        "403",
+        "429",
+        "captcha",
+        "verify",
+        "blocked",
+        "denied",
+        "proxy",
+        "connection",
+        "session",
+        "playwright",
+        "browser",
+        "challenge",
+        "rate limit",
+        "no items",
+        "failed to fetch",
+        "net::err",
+        "ns_error_proxy",
+        "econnreset",
+        "connection reset",
+    ]
+    return any(keyword in text for keyword in keywords)
+
+
 def deep_get(obj: Dict[str, Any], *keys: str, default: Any = None) -> Any:
     cur: Any = obj
     for key in keys:
@@ -93,31 +129,6 @@ def build_proxy_config(proxy_server: str) -> List[Dict[str, str]]:
     return [cfg]
 
 
-def should_rotate_proxy(exc: Exception | str) -> bool:
-    text = str(exc).lower()
-    keywords = [
-        "emptyresponse",
-        "timed out",
-        "timeout",
-        "403",
-        "429",
-        "captcha",
-        "verify",
-        "blocked",
-        "denied",
-        "proxy",
-        "connection",
-        "session",
-        "playwright",
-        "browser",
-        "challenge",
-        "rate limit",
-        "no items",
-        "failed to fetch",
-    ]
-    return any(keyword in text for keyword in keywords)
-
-
 async def collect_once(proxy_server: str, trending_count: int, ms_token: str) -> AttemptResult:
     items: List[Dict[str, Any]] = []
     browser_type = os.getenv("TIKTOK_BROWSER", "webkit")
@@ -152,7 +163,7 @@ async def collect_once(proxy_server: str, trending_count: int, ms_token: str) ->
             raise CollectorError("no items returned from trending feed")
 
         return AttemptResult(proxy=proxy_server, ok=True, reason="success", items=items)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return AttemptResult(proxy=proxy_server, ok=False, reason=str(exc), items=[])
 
 
