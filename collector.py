@@ -64,6 +64,9 @@ def should_rotate_proxy(reason: Exception | str) -> bool:
         "host unreachable",
         "socksv5",
         "socks5",
+        "download is starting",
+        "download",
+        "content-disposition",
     ]
     return any(keyword in text for keyword in keywords)
 
