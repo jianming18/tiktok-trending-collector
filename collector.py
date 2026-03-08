@@ -188,13 +188,19 @@ async def collect_once(proxy_server: str, trending_count: int, ms_token: str) ->
 async def run() -> None:
     trending_count = int(os.getenv("TRENDING_COUNT", "1"))
     ms_token = os.getenv("MS_TOKEN")
-    max_proxies = int(os.getenv("MAX_PROXIES_TO_TRY", "30"))
+    max_proxies_raw = os.getenv("MAX_PROXIES_TO_TRY", "").strip()
 
     if not ms_token:
         raise CollectorError("missing required environment variable: MS_TOKEN")
 
     proxies = get_proxy_list()
-    proxies = proxies[:max_proxies]
+
+    if max_proxies_raw:
+        max_proxies = int(max_proxies_raw)
+        proxies = proxies[:max_proxies]
+        print(f"limiting proxies to first {len(proxies)} entries")
+    else:
+        print(f"using all proxies from remote file: {len(proxies)} entries")
 
     if not proxies:
         raise CollectorError("no proxies loaded")
