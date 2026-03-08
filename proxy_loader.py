@@ -20,9 +20,22 @@ def normalize_proxy_line(line: str) -> str | None:
     if not raw or raw.startswith("#"):
         return None
 
-    if raw.startswith(("socks5://", "socks5h://")):
-        return raw.replace("socks5h://", "socks5://", 1)
+    raw_lower = raw.lower()
 
+    # 已带协议的代理，直接保留
+    if raw_lower.startswith("socks5://"):
+        return raw
+
+    if raw_lower.startswith("socks5h://"):
+        return "socks5://" + raw[len("socks5h://"):]
+
+    if raw_lower.startswith("http://"):
+        return raw
+
+    if raw_lower.startswith("https://"):
+        return raw
+
+    # 没带协议时，默认按 socks5 处理
     return f"socks5://{raw}"
 
 
@@ -68,12 +81,12 @@ def get_proxy_list() -> List[str]:
     try:
         text = fetch_proxy_file(proxy_file_url)
         save_proxy_cache(text, cache_path)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         errors.append(f"download failed: {exc}")
         if allow_cache_fallback:
             try:
                 text = load_proxy_cache(cache_path)
-            except Exception as cache_exc:  # noqa: BLE001
+            except Exception as cache_exc:
                 errors.append(f"cache failed: {cache_exc}")
 
     if text is None:
