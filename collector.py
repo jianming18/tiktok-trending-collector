@@ -29,46 +29,20 @@ class AttemptResult:
 def should_rotate_proxy(reason: Exception | str) -> bool:
     text = str(reason).lower()
 
-    keywords = [
-        "unacceptable tls certificate",
-        "certificate",
-        "cert",
-        "tls",
-        "ssl",
-        "emptyresponse",
-        "empty response",
-        "timed out",
-        "timeout",
-        "403",
-        "429",
-        "captcha",
-        "verify",
-        "blocked",
-        "denied",
-        "proxy",
-        "connection",
-        "session",
-        "playwright",
-        "browser",
-        "challenge",
-        "rate limit",
-        "no items",
-        "failed to fetch",
-        "net::err",
-        "ns_error_proxy",
-        "econnreset",
-        "connection reset",
-        "reset by peer",
-        "network is unreachable",
-        "connection refused",
-        "host unreachable",
-        "socksv5",
-        "socks5",
-        "download is starting",
-        "download",
-        "content-disposition",
+    # 这些属于程序自身或配置问题，不应继续无意义换代理
+    non_rotatable_keywords = [
+        "missing required environment variable",
+        "video payload is not a dict",
+        "proxy file downloaded successfully but no valid proxies were found",
+        "failed to download proxy file after",
+        "invalid literal for int()",
     ]
-    return any(keyword in text for keyword in keywords)
+
+    if any(keyword in text for keyword in non_rotatable_keywords):
+        return False
+
+    # 其它情况默认都当成代理/网络/风控问题，继续切代理
+    return True
 
 
 def deep_get(obj: Dict[str, Any], *keys: str, default: Any = None) -> Any:
@@ -181,6 +155,7 @@ async def collect_once(proxy_server: str, trending_count: int, ms_token: str) ->
             raise CollectorError("no items returned from trending feed")
 
         return AttemptResult(proxy=proxy_server, ok=True, reason="success", items=items)
+
     except Exception as exc:
         return AttemptResult(proxy=proxy_server, ok=False, reason=str(exc), items=[])
 
@@ -194,6 +169,15 @@ async def run() -> None:
         raise CollectorError("missing required environment variable: MS_TOKEN")
 
     proxies = get_proxy_list()
+
+    # 优先尝试 socks5，再尝试 http/https
+    proxies = sorted(
+        proxies,
+        key=lambda p: (
+            0 if p.lower().startswith("socks5://") else 1,
+            p,
+        ),
+    )
 
     if max_proxies_raw:
         max_proxies = int(max_proxies_raw)
@@ -233,6 +217,7 @@ async def run() -> None:
                 "count": len(result.items),
                 "proxy_used": result.proxy,
                 "items": result.items,
+                "status": "success",
             }
             write_json(latest_path, payload)
             append_jsonl(
@@ -257,7 +242,16 @@ async def run() -> None:
 
         raise CollectorError(f"non-rotatable error: {result.reason}")
 
-    raise CollectorError("all proxies failed")
+    failure_payload = {
+        "collected_at_utc": collected_at_utc,
+        "count": 0,
+        "proxy_used": None,
+        "items": [],
+        "status": "all_proxies_failed",
+    }
+    write_json(latest_path, failure_payload)
+    print("all proxies failed")
+    return
 
 
 if __name__ == "__main__":
