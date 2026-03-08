@@ -27,6 +27,24 @@ class AttemptResult:
     items: List[Dict[str, Any]]
 
 
+EMOJI_PATTERN = re.compile(
+    "["
+    "\U0001F300-\U0001F5FF"
+    "\U0001F600-\U0001F64F"
+    "\U0001F680-\U0001F6FF"
+    "\U0001F700-\U0001F77F"
+    "\U0001F780-\U0001F7FF"
+    "\U0001F800-\U0001F8FF"
+    "\U0001F900-\U0001F9FF"
+    "\U0001FA00-\U0001FA6F"
+    "\U0001FA70-\U0001FAFF"
+    "\U00002700-\U000027BF"
+    "\U000024C2-\U0001F251"
+    "]+",
+    flags=re.UNICODE,
+)
+
+
 def should_rotate_proxy(reason: Exception | str) -> bool:
     text = str(reason).lower()
 
@@ -82,36 +100,20 @@ def safe_rate(numerator: Any, denominator: Any) -> float:
 
 
 def has_emoji(text: str) -> bool:
-    if not text:
-        return False
-    emoji_pattern = re.compile(
-        "["
-        "\U0001F300-\U0001F5FF"
-        "\U0001F600-\U0001F64F"
-        "\U0001F680-\U0001F6FF"
-        "\U0001F700-\U0001F77F"
-        "\U0001F780-\U0001F7FF"
-        "\U0001F800-\U0001F8FF"
-        "\U0001F900-\U0001F9FF"
-        "\U0001FA00-\U0001FA6F"
-        "\U0001FA70-\U0001FAFF"
-        "\U00002700-\U000027BF"
-        "\U000024C2-\U0001F251"
-        "]+",
-        flags=re.UNICODE,
-    )
-    return bool(emoji_pattern.search(text))
+    return bool(text and EMOJI_PATTERN.search(text))
 
 
 def extract_hashtags(video_dict: Dict[str, Any]) -> List[str]:
     tags: List[str] = []
 
-    for item in video_dict.get("textExtra", []) or []:
+    text_extra = video_dict.get("textExtra", []) or []
+    for item in text_extra:
         hashtag_name = item.get("hashtagName")
         if hashtag_name and hashtag_name not in tags:
             tags.append(hashtag_name)
 
-    for item in video_dict.get("challenges", []) or []:
+    challenges = video_dict.get("challenges", []) or []
+    for item in challenges:
         title = item.get("title")
         if title and title not in tags:
             tags.append(title)
@@ -129,42 +131,49 @@ def normalize_video(video_dict: Dict[str, Any]) -> Dict[str, Any]:
     desc = video_dict.get("desc") or ""
     create_time = to_int(video_dict.get("createTime"), 0)
 
-    play_count = to_int(deep_get(video_dict, "stats", "playCount"), 0)
-    like_count = to_int(deep_get(video_dict, "stats", "diggCount"), 0)
-    comment_count = to_int(deep_get(video_dict, "stats", "commentCount"), 0)
-    share_count = to_int(deep_get(video_dict, "stats", "shareCount"), 0)
-    favorite_count = to_int(
-        deep_get(video_dict, "stats", "collectCount", default=None)
-        if deep_get(video_dict, "stats", "collectCount", default=None) is not None
-        else deep_get(video_dict, "stats", "favoriteCount"),
-        0,
+    stats = video_dict.get("stats") or {}
+    author = video_dict.get("author") or {}
+    author_stats = video_dict.get("authorStats") or {}
+    music = video_dict.get("music") or {}
+    video_meta = video_dict.get("video") or {}
+    commerce_info = video_dict.get("commerceInfo") or {}
+
+    play_count = to_int(stats.get("playCount"), 0)
+    like_count = to_int(stats.get("diggCount"), 0)
+    comment_count = to_int(stats.get("commentCount"), 0)
+    share_count = to_int(stats.get("shareCount"), 0)
+
+    collect_count = stats.get("collectCount")
+    favorite_count_raw = collect_count if collect_count is not None else stats.get("favoriteCount")
+    favorite_count = to_int(favorite_count_raw, 0)
+
+    author_id = str(author.get("id") or "")
+    author_username = str(author.get("uniqueId") or "")
+    author_nickname = str(author.get("nickname") or "")
+    author_verified = bool(author.get("verified", False))
+
+    follower_count_raw = (
+        author_stats.get("followerCount")
+        if author_stats.get("followerCount") is not None
+        else author.get("followerCount")
+    )
+    video_count_raw = (
+        author_stats.get("videoCount")
+        if author_stats.get("videoCount") is not None
+        else author.get("videoCount")
+    )
+    total_likes_raw = (
+        author_stats.get("heartCount")
+        if author_stats.get("heartCount") is not None
+        else author.get("heartCount")
     )
 
-    author_id = str(deep_get(video_dict, "author", "id") or "")
-    author_username = str(deep_get(video_dict, "author", "uniqueId") or "")
-    author_nickname = str(deep_get(video_dict, "author", "nickname") or "")
-    author_verified = bool(deep_get(video_dict, "author", "verified", default=False))
-    author_follower_count = to_int(
-        deep_get(video_dict, "authorStats", "followerCount", default=None)
-        if deep_get(video_dict, "authorStats", "followerCount", default=None) is not None
-        else deep_get(video_dict, "author", "followerCount"),
-        0,
-    )
-    author_video_count = to_int(
-        deep_get(video_dict, "authorStats", "videoCount", default=None)
-        if deep_get(video_dict, "authorStats", "videoCount", default=None) is not None
-        else deep_get(video_dict, "author", "videoCount"),
-        0,
-    )
-    author_total_likes = to_int(
-        deep_get(video_dict, "authorStats", "heartCount", default=None)
-        if deep_get(video_dict, "authorStats", "heartCount", default=None) is not None
-        else deep_get(video_dict, "author", "heartCount"),
-        0,
-    )
+    author_follower_count = to_int(follower_count_raw, 0)
+    author_video_count = to_int(video_count_raw, 0)
+    author_total_likes = to_int(total_likes_raw, 0)
 
-    music_id = str(deep_get(video_dict, "music", "id") or "")
-    music_title = str(deep_get(video_dict, "music", "title") or "")
+    music_id = str(music.get("id") or "")
+    music_title = str(music.get("title") or "")
 
     hashtags = extract_hashtags(video_dict)
     hashtag_count = len(hashtags)
@@ -176,14 +185,14 @@ def normalize_video(video_dict: Dict[str, Any]) -> Dict[str, Any]:
         or ""
     )
 
-    duration = to_int(deep_get(video_dict, "video", "duration"), 0)
+    duration = to_int(video_meta.get("duration"), 0)
     video_id = str(video_dict.get("id") or "")
     video_url = build_video_url(author_username, video_id)
 
     is_ad = bool(
         video_dict.get("isAd", False)
         or video_dict.get("isSponsored", False)
-        or deep_get(video_dict, "commerceInfo", "advPromotable", default=False)
+        or commerce_info.get("advPromotable", False)
     )
 
     engagement_total = like_count + comment_count + share_count + favorite_count
@@ -264,14 +273,17 @@ def build_proxy_config(proxy_server: str) -> List[Dict[str, str]]:
     return [cfg]
 
 
+def get_suppressed_resource_types() -> List[str]:
+    raw = os.getenv("SUPPRESS_RESOURCE_TYPES", "image,media,font")
+    return [x.strip() for x in raw.split(",") if x.strip()]
+
+
 async def collect_once(proxy_server: str, trending_count: int, ms_token: str) -> AttemptResult:
     items: List[Dict[str, Any]] = []
     browser_type = os.getenv("TIKTOK_BROWSER", "webkit")
     sleep_after = int(os.getenv("SESSION_SLEEP_AFTER", "3"))
     start_delay_ms = int(os.getenv("START_DELAY_MS", "0"))
-
-    # 新增：默认不加载图片/视频/字体，减少带宽和页面噪音
-    suppress_resource_load_types = ["image", "media", "font"]
+    suppress_resource_load_types = get_suppressed_resource_types()
 
     if start_delay_ms > 0:
         await asyncio.sleep(random.randint(0, start_delay_ms) / 1000)
@@ -285,7 +297,7 @@ async def collect_once(proxy_server: str, trending_count: int, ms_token: str) ->
                 headless=True,
                 browser=browser_type,
                 proxies=build_proxy_config(proxy_server),
-                suppress_resource_load_types=suppress_resource_load_types,  # 新增
+                suppress_resource_load_types=suppress_resource_load_types,
             )
 
             async for video in api.trending.videos(count=trending_count):
@@ -340,21 +352,19 @@ async def run() -> None:
     attempt_log_path = Path(os.getenv("ATTEMPT_LOG_PATH", "data/attempt_log.jsonl"))
 
     collected_at_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    attempt_rows: List[Dict[str, Any]] = []
 
     for index, proxy in enumerate(proxies, start=1):
         print(f"[{index}/{len(proxies)}] trying proxy: {proxy}")
         result = await collect_once(proxy, trending_count, ms_token)
 
-        append_jsonl(
-            attempt_log_path,
-            [
-                {
-                    "collected_at_utc": collected_at_utc,
-                    "proxy": result.proxy,
-                    "ok": result.ok,
-                    "reason": result.reason,
-                }
-            ],
+        attempt_rows.append(
+            {
+                "collected_at_utc": collected_at_utc,
+                "proxy": result.proxy,
+                "ok": result.ok,
+                "reason": result.reason,
+            }
         )
 
         if result.ok:
@@ -377,6 +387,7 @@ async def run() -> None:
                     for item in result.items
                 ],
             )
+            append_jsonl(attempt_log_path, attempt_rows)
             print(f"success with proxy {result.proxy}; collected {len(result.items)} items")
             return
 
@@ -386,6 +397,7 @@ async def run() -> None:
             print("rotating to next proxy...")
             continue
 
+        append_jsonl(attempt_log_path, attempt_rows)
         raise CollectorError(f"non-rotatable error: {result.reason}")
 
     failure_payload = {
@@ -396,8 +408,8 @@ async def run() -> None:
         "status": "all_proxies_failed",
     }
     write_json(latest_path, failure_payload)
+    append_jsonl(attempt_log_path, attempt_rows)
     print("all proxies failed")
-    return
 
 
 if __name__ == "__main__":
