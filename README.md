@@ -207,6 +207,3 @@ TikTok 对请求频率、token、代理都可能有限制。
 License
 
 MIT License
-
-
-你现在仓库里的内容问题，不是“信息错很多”，而是**Markdown 结构没写好**。把上面这版直接贴进去，GitHub 页面就会正常显示。
