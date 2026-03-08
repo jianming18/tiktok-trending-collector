@@ -58,6 +58,12 @@ def should_rotate_proxy(reason: Exception | str) -> bool:
         "ns_error_proxy",
         "econnreset",
         "connection reset",
+        "reset by peer",
+        "network is unreachable",
+        "connection refused",
+        "host unreachable",
+        "socksv5",
+        "socks5",
     ]
     return any(keyword in text for keyword in keywords)
 
@@ -121,6 +127,15 @@ def build_proxy_config(proxy_server: str) -> List[Dict[str, str]]:
     username = os.getenv("PROXY_USERNAME")
     password = os.getenv("PROXY_PASSWORD")
 
+    proxy_server = proxy_server.strip()
+    proxy_lower = proxy_server.lower()
+
+    if proxy_lower.startswith("socks5h://"):
+        proxy_server = "socks5://" + proxy_server[len("socks5h://"):]
+
+    elif not proxy_lower.startswith(("http://", "https://", "socks5://")):
+        proxy_server = f"socks5://{proxy_server}"
+
     cfg: Dict[str, str] = {"server": proxy_server}
     if username:
         cfg["username"] = username
@@ -156,6 +171,7 @@ async def collect_once(proxy_server: str, trending_count: int, ms_token: str) ->
 
                 if not isinstance(raw, dict):
                     raise CollectorError("video payload is not a dict")
+
                 items.append(normalize_video(raw))
 
         if not items:
@@ -179,7 +195,7 @@ async def run() -> None:
 
     if not proxies:
         raise CollectorError("no proxies loaded")
-    
+
     latest_path = Path(os.getenv("LATEST_OUTPUT_PATH", "data/trending_latest.json"))
     history_path = Path(os.getenv("HISTORY_OUTPUT_PATH", "data/trending_history.jsonl"))
     attempt_log_path = Path(os.getenv("ATTEMPT_LOG_PATH", "data/attempt_log.jsonl"))
