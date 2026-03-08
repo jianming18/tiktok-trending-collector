@@ -196,7 +196,6 @@ def normalize_video(video_dict: Dict[str, Any]) -> Dict[str, Any]:
         posted_weekday_utc = dt.weekday()
 
     return {
-        # 23 original fields
         "video_id": video_id,
         "video_url": video_url,
         "desc": desc,
@@ -220,7 +219,6 @@ def normalize_video(video_dict: Dict[str, Any]) -> Dict[str, Any]:
         "hashtags": hashtags,
         "hashtag_count": hashtag_count,
         "is_ad": is_ad,
-        # 9 derived fields
         "engagement_total": engagement_total,
         "like_rate": safe_rate(like_count, play_count),
         "comment_rate": safe_rate(comment_count, play_count),
@@ -272,6 +270,9 @@ async def collect_once(proxy_server: str, trending_count: int, ms_token: str) ->
     sleep_after = int(os.getenv("SESSION_SLEEP_AFTER", "3"))
     start_delay_ms = int(os.getenv("START_DELAY_MS", "0"))
 
+    # 新增：默认不加载图片/视频/字体，减少带宽和页面噪音
+    suppress_resource_load_types = ["image", "media", "font"]
+
     if start_delay_ms > 0:
         await asyncio.sleep(random.randint(0, start_delay_ms) / 1000)
 
@@ -284,6 +285,7 @@ async def collect_once(proxy_server: str, trending_count: int, ms_token: str) ->
                 headless=True,
                 browser=browser_type,
                 proxies=build_proxy_config(proxy_server),
+                suppress_resource_load_types=suppress_resource_load_types,  # 新增
             )
 
             async for video in api.trending.videos(count=trending_count):
