@@ -384,3 +384,10 @@
 {"collected_at_utc": "2026-03-09T01:52:45Z", "proxy": "http://205.178.186.33:8443", "ok": false, "reason": "Page.goto: Connection terminated unexpectedly\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
 {"collected_at_utc": "2026-03-09T01:52:45Z", "proxy": "http://205.185.125.136:8888", "ok": false, "reason": "Page.goto: Error receiving data: Connection reset by peer\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
 {"collected_at_utc": "2026-03-09T01:52:45Z", "proxy": "http://205.209.118.30:3138", "ok": true, "reason": "success"}
+{"collected_at_utc": "2026-03-09T08:40:35Z", "proxy": "socks5://104.219.236.127:1080", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-09T08:40:35Z", "proxy": "socks5://107.181.161.81:4145", "ok": false, "reason": "Page.goto: Unacceptable TLS certificate\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-09T08:40:35Z", "proxy": "socks5://107.181.168.145:4145", "ok": false, "reason": "Page.goto: Unacceptable TLS certificate\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-09T08:40:35Z", "proxy": "socks5://107.219.228.250:7777", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-09T08:40:35Z", "proxy": "socks5://137.131.55.145:1080", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-09T08:40:35Z", "proxy": "socks5://154.64.232.9:58367", "ok": false, "reason": "Timeout 30000ms exceeded."}
+{"collected_at_utc": "2026-03-09T08:40:35Z", "proxy": "socks5://172.86.126.35:443", "ok": true, "reason": "success"}
