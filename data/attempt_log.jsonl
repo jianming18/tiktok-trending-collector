@@ -1174,3 +1174,7 @@
 {"collected_at_utc": "2026-03-11T08:37:04Z", "proxy": "socks5://206.123.156.200:5165", "ok": false, "reason": "Page.goto: Could not connect to proxy server 206.123.156.200: Connection refused\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
 {"collected_at_utc": "2026-03-11T08:37:04Z", "proxy": "socks5://206.123.156.200:5559", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
 {"collected_at_utc": "2026-03-11T08:37:04Z", "proxy": "socks5://206.123.156.205:4441", "ok": true, "reason": "success"}
+{"collected_at_utc": "2026-03-11T16:47:45Z", "proxy": "socks5://104.219.236.127:1080", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-11T16:47:45Z", "proxy": "socks5://107.219.228.250:7777", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-11T16:47:45Z", "proxy": "socks5://123.54.197.50:21780", "ok": false, "reason": "Page.goto: Peer failed to perform TLS handshake: The TLS connection was non-properly terminated.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-11T16:47:45Z", "proxy": "socks5://154.64.235.206:58367", "ok": true, "reason": "success"}
