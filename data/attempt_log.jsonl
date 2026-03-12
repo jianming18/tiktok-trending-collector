@@ -1205,3 +1205,11 @@
 {"collected_at_utc": "2026-03-12T01:51:23Z", "proxy": "socks5://206.123.156.227:36086", "ok": false, "reason": "Page.goto: Could not connect to proxy server 206.123.156.227: Connection refused\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
 {"collected_at_utc": "2026-03-12T01:51:23Z", "proxy": "socks5://206.123.156.229:4933", "ok": false, "reason": "Page.goto: Could not connect to proxy server 206.123.156.229: Connection refused\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
 {"collected_at_utc": "2026-03-12T01:51:23Z", "proxy": "socks5://206.123.156.230:34202", "ok": true, "reason": "success"}
+{"collected_at_utc": "2026-03-12T08:38:58Z", "proxy": "socks5://104.219.236.127:1080", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-12T08:38:58Z", "proxy": "socks5://107.219.228.250:7777", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-12T08:38:58Z", "proxy": "socks5://123.54.197.49:21138", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-12T08:38:58Z", "proxy": "socks5://123.54.197.53:20959", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-12T08:38:58Z", "proxy": "socks5://154.64.235.206:58367", "ok": false, "reason": "Timeout 30000ms exceeded."}
+{"collected_at_utc": "2026-03-12T08:38:58Z", "proxy": "socks5://154.9.235.189:7890", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-12T08:38:58Z", "proxy": "socks5://172.86.126.35:443", "ok": false, "reason": "Timeout 30000ms exceeded."}
+{"collected_at_utc": "2026-03-12T08:38:58Z", "proxy": "socks5://174.138.61.184:1080", "ok": true, "reason": "success"}
