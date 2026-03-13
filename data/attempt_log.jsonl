@@ -1233,3 +1233,9 @@
 {"collected_at_utc": "2026-03-13T01:49:36Z", "proxy": "socks5://154.64.232.9:58367", "ok": false, "reason": "Timeout 30000ms exceeded."}
 {"collected_at_utc": "2026-03-13T01:49:36Z", "proxy": "socks5://154.64.235.206:58367", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
 {"collected_at_utc": "2026-03-13T01:49:36Z", "proxy": "socks5://172.86.126.35:443", "ok": true, "reason": "success"}
+{"collected_at_utc": "2026-03-13T08:36:34Z", "proxy": "socks5://104.200.135.46:4145", "ok": false, "reason": "Page.goto: Unacceptable TLS certificate\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-13T08:36:34Z", "proxy": "socks5://104.219.236.127:1080", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-13T08:36:34Z", "proxy": "socks5://104.37.135.145:4145", "ok": false, "reason": "Page.goto: Unacceptable TLS certificate\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-13T08:36:34Z", "proxy": "socks5://107.152.98.5:4145", "ok": false, "reason": "Page.goto: Unacceptable TLS certificate\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-13T08:36:34Z", "proxy": "socks5://107.219.228.250:7777", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-13T08:36:34Z", "proxy": "socks5://154.64.232.9:58367", "ok": true, "reason": "success"}
