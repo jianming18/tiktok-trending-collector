@@ -1268,3 +1268,10 @@
 {"collected_at_utc": "2026-03-15T02:02:47Z", "proxy": "socks5://107.181.161.81:4145", "ok": false, "reason": "Page.goto: Unacceptable TLS certificate\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
 {"collected_at_utc": "2026-03-15T02:02:47Z", "proxy": "socks5://107.219.228.250:7777", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
 {"collected_at_utc": "2026-03-15T02:02:47Z", "proxy": "socks5://152.53.169.91:8081", "ok": true, "reason": "success"}
+{"collected_at_utc": "2026-03-15T08:33:16Z", "proxy": "socks5://104.219.236.127:1080", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-15T08:33:16Z", "proxy": "socks5://104.37.135.145:4145", "ok": false, "reason": "Page.goto: Unacceptable TLS certificate\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-15T08:33:16Z", "proxy": "socks5://107.219.228.250:7777", "ok": false, "reason": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-15T08:33:16Z", "proxy": "socks5://141.148.154.164:5555", "ok": false, "reason": "Timeout 30000ms exceeded."}
+{"collected_at_utc": "2026-03-15T08:33:16Z", "proxy": "socks5://142.54.235.9:4145", "ok": false, "reason": "Page.goto: Unacceptable TLS certificate\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-15T08:33:16Z", "proxy": "socks5://142.54.237.38:4145", "ok": false, "reason": "Page.goto: Unacceptable TLS certificate\nCall log:\n  - navigating to \"https://www.tiktok.com/\", waiting until \"load\"\n"}
+{"collected_at_utc": "2026-03-15T08:33:16Z", "proxy": "socks5://152.53.169.91:8081", "ok": true, "reason": "success"}
